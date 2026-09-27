@@ -94,32 +94,65 @@ public:
         for (int i=0; i<index-1; i++){
             current= cureent->next;
         }
-        Node* delete=new Node(current->next);
+        Node* deletenode=new Node(current->next);
         current->next=delete->next;
+        delete deletenode;
         --count;
+        return removedData;
+
     }
 
     bool removeItem(T item, void (*removeItemData)(T) = 0) override {
         // TODO Q1
-        (void)item; (void)removeItemData;
-        throw logic_error("TODO Q1: SLinkedList::removeItem");
+    Node* previous = head;
+
+    while (previous->next != tail &&
+           !equals(previous->next->data, item, itemEqual)) {
+        previous = previous->next;
     }
 
-    void clear() override {
-        // TODO Q1
-        throw logic_error("TODO Q1: SLinkedList::clear");
+    if (previous->next == tail) {
+        return false;
     }
+
+    Node* deletedNode = previous->next;
+    previous->next = deletedNode->next;
+
+    if (removeItemData != 0) {
+        removeItemData(deletedNode->data);
+    }
+
+    delete deletedNode;
+    --count;
+
+    return true;
+}
 
     T& get(int index) override {
         // TODO Q1
-        (void)index;
-        throw logic_error("TODO Q1: SLinkedList::get");
+        Node* current=head->next;
+        for (int i=0; i<index;i++){
+            current=current->next;
+        }
+        return current->data;
+        
     }
 
     int indexOf(T item) override {
         // TODO Q1
-        (void)item;
-        throw logic_error("TODO Q1: SLinkedList::indexOf");
+         Node* current = head->next;
+         int index = 0;
+
+    while (current != tail) {
+        if (equals(current->data, item, itemEqual)) {
+            return index;
+        }
+
+        current = current->next;
+        ++index;
+    }
+
+    return -1;
     }
 
     bool empty() override { return count == 0; }
