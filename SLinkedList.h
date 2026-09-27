@@ -96,6 +96,7 @@ public:
         }
         Node+ delete=new Node(current->next);
         current->next=delete->next;
+        --count;
     }
 
     bool removeItem(T item, void (*removeItemData)(T) = 0) override {
