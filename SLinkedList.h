@@ -94,7 +94,7 @@ public:
         for (int i=0; i<index-1; i++){
             current= cureent->next;
         }
-        Node+ delete=new Node(current->next);
+        Node* delete=new Node(current->next);
         current->next=delete->next;
         --count;
     }
