@@ -66,20 +66,36 @@ public:
 
     void add(T e) override {
         // TODO Q1
-        (void)e;
-        throw logic_error("TODO Q1: SLinkedList::add");
+        Node* newNode = new Node(e, tail);
+        Node* current = head;
+        while (current->next != tail) {
+            current = current->next;
+        }
+        current->next = newNode;
+        ++count;    
     }
 
-    void add(int index, T e) override {
-        // TODO Q1
-        (void)index; (void)e;
-        throw logic_error("TODO Q1: SLinkedList::add(index, e)");
+   void add(int index, T e) override {
+    if (index < 0 || index > count) {
+        throw out_of_range("Index is out of range");
     }
+    Node* previous = head;
+    for (int i = 0; i < index; ++i) {
+        previous = previous->next;
+    }
+    Node* newNode = new Node(e, previous->next);
+    previous->next = newNode;
+    ++count;
+        }
 
     T removeAt(int index) override {
         // TODO Q1
-        (void)index;
-        throw logic_error("TODO Q1: SLinkedList::removeAt");
+        Node* current= head;
+        for (int i=0; i<index-1; i++){
+            current= cureent->next;
+        }
+        Node+ delete=new Node(current->next);
+        current->next=delete->next;
     }
 
     bool removeItem(T item, void (*removeItemData)(T) = 0) override {
