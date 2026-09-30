@@ -65,15 +65,12 @@ public:
     }
 
     void add(T e) override {
-        // TODO Q1
-        Node* newNode = new Node(e, tail);
-        Node* current = head;
-        while (current->next != tail) {
-            current = current->next;
-        }
-        current->next = newNode;
-        ++count;    
-    }
+    Node* newNode = new Node(e, tail);
+    tail->next->next = newNode;
+    tail->next = newNode;
+
+    ++count;
+}
 
    void add(int index, T e) override {
     if (index < 0 || index > count) {

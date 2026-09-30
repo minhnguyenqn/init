@@ -49,6 +49,8 @@ public:
 
     void add(T e) override {
         // TODO Q2
+        Node* newNode= new Node(e);
+        
         (void)e;
         throw logic_error("TODO Q2: CircularLinkedList::add");
     }
