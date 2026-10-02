@@ -16,23 +16,62 @@ public:
 
     void sort(T array[], int size, int (*comparator)(T&, T&) = 0) override {
         // TODO Q4
-        (void)array; (void)size; (void)comparator;
-        throw logic_error("TODO Q4: QuickSort::sort");
+        if (size <= 1) {
+            return;
+        }
+        quickSort(array, 0, size - 1, comparator);
     }
 
 private:
     void quickSort(T array[], int left, int right,
                    int (*comparator)(T&, T&) = 0) {
-        // TODO Q4
-        (void)array; (void)left; (void)right; (void)comparator;
-        throw logic_error("TODO Q4: QuickSort::quickSort");
+        while (left < right) {
+            int pivotIndex = partition(array, left, right, comparator);
+            if (pivotIndex - left < right - pivotIndex) {
+                quickSort(array, left, pivotIndex - 1, comparator);
+                left = pivotIndex + 1;
+            } else {
+                quickSort(array, pivotIndex + 1, right, comparator);
+                right = pivotIndex - 1;
+            }
+        }
     }
 
     int partition(T array[], int left, int right,
                   int (*comparator)(T&, T&) = 0) {
-        // TODO Q4
-        (void)array; (void)left; (void)right; (void)comparator;
-        throw logic_error("TODO Q4: QuickSort::partition");
+        int pivotIndex = left + (right - left) / 2;
+
+        if (pivotSelection != 0) {
+            int length = right - left + 1;
+            int selected = pivotSelection(array + left, length);
+
+            if (selected < 0 || selected >= length) {
+                throw out_of_range("Pivot index is out of range");
+            }
+
+            pivotIndex = left + selected;
+        }
+        swap(array[pivotIndex], array[right]);
+
+        int position = left;
+
+        for (int i = left; i < right; ++i) {
+            bool comesBefore;
+
+            if (comparator != 0) {
+                comesBefore = comparator(array[i], array[right]) < 0;
+            } else {
+                comesBefore = array[i] < array[right];
+            }
+
+            if (comesBefore) {
+                swap(array[i], array[position]);
+                ++position;
+            }
+        }
+        swap(array[position], array[right]);
+
+        return position;
     }
 };
 
