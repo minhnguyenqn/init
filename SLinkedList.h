@@ -65,91 +65,99 @@ public:
     }
 
     void add(T e) override {
-    Node* newNode = new Node(e, tail);
-    tail->next->next = newNode;
-    tail->next = newNode;
-
-    ++count;
-}
-
-   void add(int index, T e) override {
-    if (index < 0 || index > count) {
-        throw out_of_range("Index is out of range");
+        Node* newNode = new Node(e, tail);
+        // tail->next stores the last data node, or head when empty.
+        tail->next->next = newNode;
+        tail->next = newNode;
+        ++count;
     }
-    Node* previous = head;
-    for (int i = 0; i < index; ++i) {
-        previous = previous->next;
-    }
-    Node* newNode = new Node(e, previous->next);
-    previous->next = newNode;
-    ++count;
+
+    void add(int index, T e) override {
+        if (index < 0 || index > count) {
+            throw out_of_range("Index is out of range");
         }
+        if (index == count) {
+            add(e);
+            return;
+        }
+        Node* previous = head;
+        for (int i = 0; i < index; ++i) {
+            previous = previous->next;
+        }
+        previous->next = new Node(e, previous->next);
+        ++count;
+    }
 
     T removeAt(int index) override {
-        // TODO Q1
-        Node* current= head;
-        for (int i=0; i<index-1; i++){
-            current= cureent->next;
+        if (index < 0 || index >= count) {
+            throw out_of_range("Index is out of range");
         }
-        Node* deletenode=new Node(current->next);
-        current->next=delete->next;
-        delete deletenode;
+        Node* previous = head;
+        for (int i = 0; i < index; ++i) {
+            previous = previous->next;
+        }
+        Node* deletedNode = previous->next;
+        T removedData = deletedNode->data;
+        previous->next = deletedNode->next;
+        if (deletedNode == tail->next) {
+            tail->next = previous;
+        }
+        delete deletedNode;
         --count;
         return removedData;
-
     }
 
     bool removeItem(T item, void (*removeItemData)(T) = 0) override {
-        // TODO Q1
-    Node* previous = head;
-
-    while (previous->next != tail &&
-           !equals(previous->next->data, item, itemEqual)) {
-        previous = previous->next;
+        Node* previous = head;
+        while (previous->next != tail &&
+               !equals(previous->next->data, item, itemEqual)) {
+            previous = previous->next;
+        }
+        if (previous->next == tail) {
+            return false;
+        }
+        Node* deletedNode = previous->next;
+        previous->next = deletedNode->next;
+        if (deletedNode == tail->next) {
+            tail->next = previous;
+        }
+        if (removeItemData != 0) {
+            removeItemData(deletedNode->data);
+        }
+        delete deletedNode;
+        --count;
+        return true;
     }
 
-    if (previous->next == tail) {
-        return false;
+    void clear() override {
+        removeInternalData();
+        head->next = tail;
+        tail->next = head;
+        count = 0;
     }
-
-    Node* deletedNode = previous->next;
-    previous->next = deletedNode->next;
-
-    if (removeItemData != 0) {
-        removeItemData(deletedNode->data);
-    }
-
-    delete deletedNode;
-    --count;
-
-    return true;
-}
 
     T& get(int index) override {
-        // TODO Q1
-        Node* current=head->next;
-        for (int i=0; i<index;i++){
-            current=current->next;
+        if (index < 0 || index >= count) {
+            throw out_of_range("Index is out of range");
+        }
+        Node* current = head->next;
+        for (int i = 0; i < index; ++i) {
+            current = current->next;
         }
         return current->data;
-        
     }
 
     int indexOf(T item) override {
-        // TODO Q1
-         Node* current = head->next;
-         int index = 0;
-
-    while (current != tail) {
-        if (equals(current->data, item, itemEqual)) {
-            return index;
+        Node* current = head->next;
+        int index = 0;
+        while (current != tail) {
+            if (equals(current->data, item, itemEqual)) {
+                return index;
+            }
+            current = current->next;
+            ++index;
         }
-
-        current = current->next;
-        ++index;
-    }
-
-    return -1;
+        return -1;
     }
 
     bool empty() override { return count == 0; }
